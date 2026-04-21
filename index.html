@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>GZTI 游戏玩家人格测试</title>
+<style>
+/* ===== RESET ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:16px; -webkit-tap-highlight-color:transparent; scroll-behavior:smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #f0f4f8;
+  color: #1a1a2e;
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== VARIABLES ===== */
+:root {
+  --primary: #0a3cdf;
+  --primary-light: #2d5be6;
+  --primary-bg: #eaf0ff;
+  --primary-glow: rgba(10,60,223,0.12);
+  --accent: #0033ff;
+  --bg-page: #f0f4f8;
+  --bg-white: #ffffff;
+  --bg-card: #ffffff;
+  --bg-option: #f5f7fb;
+  --bg-option-hover: #eaeffa;
+  --border: #dde3ed;
+  --border-light: #e8edf5;
+  --text-primary: #0f1629;
+  --text-secondary: #5a6580;
+  --text-hint: #8e99b0;
+  --radius: 16px;
+  --radius-sm: 12px;
+  --max-w: 720px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --brand: #0a3cdf;
+  --brand-bg: rgba(10,60,223,0.06);
+  --brand-border: rgba(10,60,223,0.12);
+  /* Keep aliases for backward compat in code */
+  --green-tag: #0a3cdf;
+  --green-tag-bg: rgba(10,60,223,0.06);
+  --green-tag-border: rgba(10,60,223,0.12);
+}
+
+/* ===== SCREENS ===== */
+.screen { display:none; width:100%; }
+.screen.active { display:block; }
+
+/* ===== START SCREEN ===== */
+.start-screen { background: var(--bg-page); }
+
+/* Hero section */
+.hero {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 40px 20px 32px;
+}
+.hero-card {
+  background: var(--bg-white);
+  border-radius: 24px;
+  padding: 56px 32px 48px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10,60,223,0.06) 0%, transparent 70%);
+}
+.hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(10,60,223,0.04) 0%, transparent 70%);
+}
+.hero-logo {
+  display: block;
+  height: 144px;
+  width: auto;
+  margin: 0 auto 28px;
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600;
+  color: var(--green-tag);
+  background: var(--green-tag-bg);
+  border: 1px solid var(--green-tag-border);
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+.hero-tag::before { content: '✦'; font-size: 11px; }
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1.3;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  position: relative; z-index: 1;
+  letter-spacing: -0.5px;
+}
+.hero-title span {
+  display: block;
+}
+
+.hero-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  position: relative; z-index: 1;
+}
+
+.hero-actions {
+  display: flex; gap: 12px;
+  justify-content: center;
+  position: relative; z-index: 1;
+}
+
+.btn-start {
+  padding: 14px 40px;
+  border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 700;
+  color: #fff;
+  background: var(--green-tag);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-user-select: none; user-select: none;
+}
+.btn-start:active { transform: scale(0.97); opacity: 0.9; }
+
+.btn-share-home {
+  padding: 14px 32px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 16px; font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-share-home:active { background: var(--bg-option); }
+
+/* Personality grid section */
+.types-section {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 20px 48px;
+}
+.types-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.types-header h2 {
+  font-size: 22px; font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.types-header p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.types-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (min-width: 600px) {
+  .types-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+}
+@media (max-width: 420px) {
+  .types-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+}
+
+.type-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-sm);
+  padding: 20px 8px 16px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+}
+.type-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(10,60,223,0.1), 0 2px 8px rgba(0,0,0,0.04);
+  border-color: rgba(10,60,223,0.2);
+  background: linear-gradient(180deg, rgba(10,60,223,0.02) 0%, #fff 100%);
+}
+.type-card:active { transform: translateY(-2px) scale(1.0); }
+.type-card-icon {
+  width: 80px; height: 80px;
+  border-radius: 16px;
+  background: transparent;
+  margin: 0 auto 10px;
+  display: flex; align-items: flex-end; justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+}
+.type-card-icon img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+}
+.type-card:hover .type-card-icon {
+  transform: scale(1.12);
+}
+.type-card-code {
+  font-size: 13px; font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+  transition: color 0.3s;
+}
+.type-card:hover .type-card-code {
+  color: var(--brand);
+}
+.type-card-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+.type-card:hover .type-card-name {
+  color: var(--text-primary);
+}
+
+/* ===== QUESTION SCREEN ===== */
+.question-screen { background: var(--bg-white); }
+
+/* Sticky progress */
+.q-progress-bar {
+  position: sticky; top: 0;
+  background: var(--bg-white);
+  z-index: 50;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+.q-progress-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.q-progress-top {
+  display: flex; justify-content: flex-end;
+  margin-bottom: 8px;
+}
+.q-progress-text {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-hint);
+}
+.q-track {
+  width: 100%; height: 4px;
+  background: #e8ecf1;
+  border-radius: 100px;
+  overflow: hidden;
+}
+.q-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, #7ba3f7, var(--brand));
+  transition: width 0.4s ease;
+  min-width: 2%;
+}
+
+/* Questions container */
+.questions-container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 8px 20px 120px;
+}
+
+/* Single question block */
+.q-block {
+  padding: 28px 0 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+.q-block:last-child { border-bottom: none; }
+.q-block.unanswered {
+  background: rgba(239,68,68,0.03);
+  border-radius: 12px;
+  margin: 0 -12px;
+  padding: 28px 12px 24px;
+  border-bottom: none;
+  position: relative;
+}
+.q-block.unanswered::before {
+  content: '⚠ 未作答';
+  position: absolute;
+  top: 8px; right: 12px;
+  font-size: 11px; font-weight: 600;
+  color: #ef4444;
+  background: rgba(239,68,68,0.08);
+  padding: 3px 10px;
+  border-radius: 100px;
+  animation: pulse-tag 1.5s ease-in-out infinite;
+}
+@keyframes pulse-tag {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.q-number-text {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.q-options {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.q-opt {
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-option);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-user-select: none; user-select: none;
+}
+.q-opt:active { transform: scale(0.99); }
+.q-opt:hover { background: var(--bg-option-hover); }
+.q-opt.selected {
+  border-color: var(--brand);
+  background: rgba(10,60,223,0.05);
+}
+
+.q-radio {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.q-opt.selected .q-radio {
+  border-color: var(--green-tag);
+}
+.q-opt.selected .q-radio::after {
+  content: '';
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--green-tag);
+}
+.q-opt-text {
+  font-size: 15px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Submit bar (fixed bottom) */
+.submit-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-white);
+  border-top: 1px solid var(--border-light);
+  padding: 16px 20px;
+  padding-bottom: calc(16px + var(--safe-bottom));
+  z-index: 50;
+  display: flex; justify-content: center;
+}
+.submit-bar .btn-submit {
+  width: 100%;
+  max-width: var(--max-w);
+  padding: 15px;
+  border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 700;
+  color: #fff;
+  background: var(--green-tag);
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.4;
+}
+.submit-bar .btn-submit.ready {
+  opacity: 1;
+}
+.submit-bar .btn-submit:active { transform: scale(0.98); }
+
+/* ===== MOBILE SINGLE-CARD MODE ===== */
+.mobile-nav {
+  display: none;
+  gap: 12px;
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 20px;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-white);
+  border-top: 1px solid var(--border-light);
+  padding: 14px 20px;
+  padding-bottom: calc(14px + var(--safe-bottom));
+  z-index: 50;
+  justify-content: center;
+}
+.mobile-nav .btn-mnav {
+  flex: 1;
+  padding: 14px;
+  border: none; border-radius: 12px;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.mobile-nav .btn-mnav-prev {
+  background: var(--bg-option);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+.mobile-nav .btn-mnav-next {
+  background: var(--brand);
+  color: #fff;
+}
+.mobile-nav .btn-mnav:active { transform: scale(0.97); }
+
+@media (max-width: 640px) {
+  body.mobile-mode .questions-container { padding-bottom: 100px; }
+  body.mobile-mode .q-block {
+    display: none;
+    min-height: 50vh;
+    padding: 24px 0;
+    border-bottom: none;
+    animation: fadeIn 0.3s ease;
+  }
+  body.mobile-mode .q-block.mobile-active { display: block; }
+  body.mobile-mode .submit-bar { display: none; }
+  body.mobile-mode .mobile-nav { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+}
+
+/* ===== LOADING SCREEN ===== */
+.loading-screen {
+  display: none;
+  flex-direction: column;
+  justify-content: center; align-items: center;
+  min-height: 100vh; min-height: 100dvh;
+  background: var(--bg-white);
+  text-align: center; gap: 28px;
+}
+.loading-screen.active { display: flex; }
+.loading-spinner {
+  width: 56px; height: 56px;
+  border: 3px solid #e8ecf1;
+  border-top-color: var(--green-tag);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-msg {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+/* ===== RESULT SCREEN ===== */
+.result-screen { background: var(--bg-page); }
+.result-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  display: flex; flex-direction: column;
+  gap: 16px;
+}
+.result-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 520px) {
+  .result-hero { grid-template-columns: 1fr; }
+}
+.result-left-card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 28px 20px 20px;
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.result-left-label {
+  font-size: 13px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 6px;
+}
+.result-left-name {
+  font-size: 28px; font-weight: 900;
+  color: var(--text-primary); margin-bottom: 2px;
+}
+.result-left-code {
+  font-size: 13px; font-weight: 700;
+  color: var(--text-hint); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.result-avatar {
+  width: 100%; max-width: 200px; aspect-ratio: 1;
+  border-radius: 0; background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  overflow: visible; margin-bottom: 16px;
+}
+.result-avatar img { width: 100%; height: 100%; object-fit: contain; }
+.result-left-quote {
+  font-size: 13px; font-style: italic;
+  color: var(--text-secondary); line-height: 1.5;
+}
+.result-right-card {
+  background: var(--bg-white);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  display: flex; flex-direction: column; justify-content: center;
+}
+.result-right-label {
+  font-size: 12px; font-weight: 600;
+  color: var(--text-hint); margin-bottom: 8px;
+}
+.result-right-title {
+  font-size: 30px; font-weight: 900;
+  color: var(--text-primary); line-height: 1.2; margin-bottom: 16px;
+}
+.result-right-title small {
+  font-size: 18px; font-weight: 700; color: var(--text-secondary);
+}
+.result-match-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 600;
+  color: var(--brand); background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+  margin-bottom: 12px; width: fit-content;
+}
+.result-right-hint {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.6; margin-bottom: 14px;
+}
+.result-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.result-tag {
+  padding: 5px 12px; border-radius: 100px;
+  font-size: 11px; font-weight: 600;
+  color: var(--brand); background: var(--brand-bg);
+  border: 1px solid var(--brand-border);
+}
+.r-card {
+  width: 100%; background: var(--bg-white);
+  border-radius: var(--radius); padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.r-card-title {
+  font-size: 16px; font-weight: 800;
+  color: var(--text-primary); margin-bottom: 14px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--border-light);
+}
+.r-card-text {
+  font-size: 15px; line-height: 1.8; color: var(--text-primary);
+}
+/* legacy compat - hide old elements if present */
+.result-badge, .result-type-name, .result-type-code, .result-quote {display:none;}
+.result-quote::before, .result-quote::after {
+  content: ''; color: var(--green-tag); font-size: 20px; font-style: normal;
+}
+.result-quote::after { content: ''; }
+
+/* Dim bars */
+.dim-bars { display: flex; flex-direction: column; gap: 14px; }
+.dim-item {}
+.dim-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.dim-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.dim-val { font-size: 13px; font-weight: 700; color: var(--green-tag); }
+.dim-track {
+  width: 100%; height: 6px;
+  background: #e8ecf1;
+  border-radius: 100px;
+  overflow: hidden;
+}
+.dim-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Match list */
+.match-list { display: flex; flex-direction: column; gap: 10px; }
+.match-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--bg-option);
+}
+.match-rank {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  flex-shrink: 0;
+}
+.match-rank.r1 { background: var(--green-tag); color: #fff; }
+.match-rank.r2 { background: rgba(10,60,223,0.1); color: var(--brand); }
+.match-rank.r3 { background: #e8ecf1; color: var(--text-secondary); }
+.match-emoji { font-size: 28px; }
+.match-info { flex: 1; }
+.match-name { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.match-code { font-size: 12px; color: var(--text-hint); }
+.match-score { font-size: 18px; font-weight: 800; color: var(--green-tag); }
+
+/* Result actions */
+.result-actions {
+  display: flex; flex-direction: column; gap: 12px;
+  width: 100%; margin-top: 8px;
+}
+.result-actions .btn-start { width: 100%; text-align: center; }
+.result-actions .btn-share-home { width: 100%; text-align: center; }
+
+/* ===== SHARE OVERLAY ===== */
+.share-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  align-items: flex-start; justify-content: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+.share-overlay.active { display: flex; }
+
+.share-capture {
+  width: 100%; max-width: 375px;
+  background: #f0f4f8;
+  border-radius: 24px;
+  padding: 16px;
+  margin: 20px auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+/* Top card: persona display */
+.share-persona-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 2px solid rgba(10,60,223,0.12);
+  padding: 32px 24px 24px;
+  text-align: center;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.share-persona-label {
+  font-size: 14px; font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+.share-persona-name {
+  font-size: 36px; font-weight: 900;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.share-persona-code {
+  font-size: 16px; font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+.share-persona-avatar {
+  width: 180px; height: 180px;
+  margin: 0 auto 20px;
+  display: flex; align-items: center; justify-content: center;
+}
+.share-persona-avatar img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  object-fit: contain;
+}
+.share-persona-quote {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Bottom card: type info */
+.share-info-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 2px solid rgba(10,60,223,0.12);
+  padding: 24px;
+  margin-bottom: 12px;
+}
+.share-info-sublabel {
+  font-size: 16px; font-weight: 700;
+  color: var(--brand);
+  margin-bottom: 14px;
+}
+.share-info-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.share-tags-row {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.share-tag-item {
+  padding: 4px 10px;
+  border-radius: 100px;
+  font-size: 11px; font-weight: 600;
+  color: var(--brand);
+  background: var(--brand-bg);
+}
+
+/* QR footer */
+.share-qr-row {
+  display: flex; align-items: center; gap: 14px;
+  background: #fff;
+  border-radius: 16px;
+  border: 2px solid rgba(10,60,223,0.12);
+  padding: 16px;
+}
+.share-qr {
+  width: 64px; height: 64px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.share-qr canvas, .share-qr img { width: 100%; height: 100%; }
+.share-qr-text { flex: 1; }
+.share-qr-title {
+  font-size: 13px; font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+.share-qr-hint {
+  font-size: 11px; color: var(--text-hint);
+  line-height: 1.4;
+}
+
+/* Action buttons */
+.share-actions {
+  width: 100%; max-width: 375px;
+  margin: 0 auto;
+  display: flex; flex-direction: column; gap: 10px;
+  padding-bottom: 40px;
+}
+.share-actions .btn-start { width: 100%; text-align: center; }
+.share-actions .btn-share-home {
+  width: 100%; text-align: center;
+  background: rgba(255,255,255,0.9);
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%; transform: translateX(-50%) translateY(-10px);
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: var(--text-primary);
+  color: #fff;
+  font-size: 14px; font-weight: 600;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 200;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ===== WATERMARK ===== */
+.watermark {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-hint);
+  padding: 20px 0 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 600px) {
+  .hero-title { font-size: 42px; }
+  .hero-card { padding: 64px 48px 56px; }
+}
+@media (max-width: 640px) {
+  /* Hero */
+  .hero { padding: 20px 16px 24px; }
+  .hero-card { padding: 36px 20px 32px; }
+  .hero-logo { height: 100px; margin-bottom: 20px; }
+  .hero-title { font-size: 28px; }
+  .hero-desc { font-size: 13px; margin-bottom: 24px; }
+  .hero-actions { flex-direction: column; gap: 10px; }
+  .btn-start, .btn-share-home { width: 100%; }
+
+  /* Types grid */
+  .types-section { padding: 0 16px 32px; }
+  .types-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .type-card { padding: 14px 6px 12px; }
+  .type-card-icon { width: 60px; height: 60px; }
+  .type-card-code { font-size: 11px; }
+  .type-card-name { font-size: 11px; }
+
+  /* Result page */
+  .result-inner { padding: 16px 16px 40px; gap: 12px; }
+  .result-hero { grid-template-columns: 1fr !important; gap: 12px; }
+  .result-left-card { padding: 24px 16px 18px; }
+  .result-left-name { font-size: 24px; }
+  .result-left-code { font-size: 12px; margin-bottom: 12px; }
+  .result-avatar { max-width: 160px; }
+  .result-right-card { padding: 20px 16px; }
+  .result-right-title { font-size: 24px; }
+  .r-card { padding: 18px 16px; }
+  .r-card-title { font-size: 15px; }
+  .r-card-text { font-size: 14px; }
+  .result-actions { gap: 10px; }
+
+  /* Share card */
+  .share-overlay { padding: 12px; }
+  .share-capture { max-width: 100%; padding: 12px; margin: 10px auto; }
+  .share-persona-card { padding: 24px 16px 18px; }
+  .share-persona-name { font-size: 28px; }
+  .share-persona-code { font-size: 14px; margin-bottom: 14px; }
+  .share-persona-avatar { width: 140px; height: 140px; }
+  .share-persona-quote { font-size: 13px; }
+  .share-info-card { padding: 18px 16px; }
+  .share-info-sublabel { font-size: 14px; }
+  .share-info-desc { font-size: 12px; }
+  .share-qr-row { padding: 12px; }
+  .share-actions { max-width: 100%; padding-bottom: 24px; }
+
+  /* Question page improvements */
+  .q-number-text { font-size: 16px; }
+  .q-opt { padding: 14px 14px; }
+  .q-opt-text { font-size: 14px; }
+  .q-radio { width: 18px; height: 18px; }
+  .q-opt.selected .q-radio::after { width: 9px; height: 9px; }
+}
+@media (max-width: 374px) {
+  .hero-title { font-size: 24px; }
+  .hero-logo { height: 80px; }
+  .types-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .type-card-icon { width: 48px; height: 48px; }
+  .share-persona-name { font-size: 24px; }
+  .share-persona-avatar { width: 120px; height: 120px; }
+}
+
+/* Save image modal */
+.save-modal {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 300;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  padding: 20px;
+  gap: 16px;
+}
+.save-modal.active { display: flex; }
+.save-modal img {
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.save-modal-hint {
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.6;
+}
+.save-modal-close {
+  padding: 12px 32px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 12px;
+  background: transparent;
+  color: #fff;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== START SCREEN ===== -->
+<div class="screen start-screen active" id="screen-start">
+  <div class="hero">
+    <div class="hero-card">
+      <img src="logo.png" alt="光子工作室群" class="hero-logo">
+      <h1 class="hero-title">
+        <span>测试你的</span>
+        <span>游戏人格类型</span>
+      </h1>
+      <p class="hero-desc">完成 24 道趣味测试题，快速查看你的游戏人格画像、游戏风格和深度解析。</p>
+      <div class="hero-actions">
+        <button class="btn-start" onclick="startTest()">开始测试</button>
+        <button class="btn-share-home" onclick="copyLink()">分享测试</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="types-section">
+    <div class="types-header">
+      <h2>共有 12 种人格</h2>
+      <p>点击下方任意卡片，预览该人格的详细解读</p>
+    </div>
+    <div class="types-grid" id="types-grid"></div>
+  </div>
+</div>
+
+<!-- ===== QUESTION SCREEN ===== -->
+<div class="screen question-screen" id="screen-question">
+  <div class="q-progress-bar">
+    <div class="q-progress-inner">
+      <div class="q-progress-top">
+        <span class="q-progress-text" id="q-progress-text">0 / 24</span>
+      </div>
+      <div class="q-track">
+        <div class="q-fill" id="q-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="questions-container" id="questions-container"></div>
+  <div class="submit-bar">
+    <button class="btn-submit" id="btn-submit" onclick="submitTest()">查看结果</button>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <button class="btn-mnav btn-mnav-prev" id="btn-mprev" onclick="mobilePrev()">上一题</button>
+    <button class="btn-mnav btn-mnav-next" id="btn-mnext" onclick="mobileNext()">下一题</button>
+  </div>
+</div>
+
+<!-- ===== LOADING SCREEN ===== -->
+<div class="screen loading-screen" id="screen-loading">
+  <div class="loading-spinner"></div>
+  <p class="loading-msg">正在分析你的游戏人格...</p>
+</div>
+
+<!-- ===== RESULT SCREEN ===== -->
+<div class="screen result-screen" id="screen-result">
+  <div class="result-inner">
+    <!-- Hero: two columns -->
+    <div class="result-hero">
+      <!-- Left: avatar card -->
+      <div class="result-left-card">
+        <div class="result-left-label">你的人格类型是：</div>
+        <div class="result-left-name" id="r-left-name"></div>
+        <div class="result-left-code" id="r-left-code"></div>
+        <div class="result-avatar" id="result-avatar"></div>
+        <div class="result-left-quote" id="r-left-quote"></div>
+      </div>
+      <!-- Right: type info -->
+      <div class="result-right-card">
+        <div class="result-right-label">你的主类型</div>
+        <div class="result-right-title" id="r-right-title"></div>
+        <div class="result-match-badge" id="r-match-badge"></div>
+        <div class="result-right-hint" id="r-right-hint"></div>
+        <div class="result-tags" id="result-tags"></div>
+      </div>
+    </div>
+
+    <!-- Description card -->
+    <div class="r-card">
+      <div class="r-card-title">人格简读</div>
+      <p class="r-card-text" style="font-size:16px;font-weight:600;color:var(--brand);margin-bottom:12px;line-height:1.6;" id="result-title"></p>
+      <p class="r-card-text" id="result-desc"></p>
+    </div>
+
+    <!-- Long description card -->
+    <div class="r-card">
+      <div class="r-card-title">详细解读</div>
+      <p class="r-card-text" id="result-longdesc"></p>
+    </div>
+
+    <!-- Teammate card -->
+    <div class="r-card">
+      <div class="r-card-title">队友眼中的你</div>
+      <p class="r-card-text" id="result-teammate"></p>
+    </div>
+
+    <!-- Dimension bars -->
+    <div class="r-card">
+      <div class="r-card-title">四维度评分</div>
+      <div class="dim-bars" id="dim-bars"></div>
+    </div>
+
+    <!-- Top 3 -->
+    <div class="r-card">
+      <div class="r-card-title">最匹配 TOP 3</div>
+      <div class="match-list" id="match-list"></div>
+    </div>
+
+    <div class="result-actions" id="result-actions">
+      <button class="btn-start" onclick="shareResult()">分享结果</button>
+      <button class="btn-share-home" onclick="restartTest()">重新测试</button>
+    </div>
+    <div class="watermark">GZTI 游戏玩家人格测试 v1.0</div>
+  </div>
+</div>
+
+<!-- ===== SHARE OVERLAY ===== -->
+<div class="share-overlay" id="share-overlay" onclick="closeShare(event)">
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div class="share-capture" id="share-capture">
+      <!-- Card 1: Persona -->
+      <div class="share-persona-card">
+        <div class="share-persona-label">你的人格类型是：</div>
+        <div class="share-persona-name" id="s-name"></div>
+        <div class="share-persona-code" id="s-code"></div>
+        <div class="share-persona-avatar"><img id="s-avatar" src="" alt=""></div>
+        <div class="share-persona-quote" id="s-quote"></div>
+      </div>
+      <!-- Card 2: Info -->
+      <div class="share-info-card">
+        <div class="share-info-sublabel">你的游戏人格已激活</div>
+        <div class="share-info-desc" id="s-desc"></div>
+        <div class="share-tags-row" id="s-tags"></div>
+      </div>
+      <!-- QR footer -->
+      <div class="share-qr-row">
+        <div class="share-qr" id="s-qr"></div>
+        <div class="share-qr-text">
+          <div class="share-qr-title">GZTI 游戏玩家人格测试</div>
+          <div class="share-qr-hint">扫码测试你的游戏人格</div>
+        </div>
+      </div>
+    </div>
+    <div class="share-actions">
+      <button class="btn-start" onclick="saveShareImage()">保存分享卡片</button>
+      <button class="btn-share-home" onclick="copyShareText()">复制分享文案</button>
+      <button class="btn-share-home" onclick="document.getElementById('share-overlay').classList.remove('active')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- CDN libs for share card -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== SAVE IMAGE MODAL ===== -->
+<div class="save-modal" id="save-modal" onclick="closeSaveModal(event)">
+  <img id="save-modal-img" src="" alt="分享卡片">
+  <p class="save-modal-hint">📱 长按图片保存到相册</p>
+  <button class="save-modal-close" onclick="document.getElementById('save-modal').classList.remove('active')">关闭</button>
+</div>
+
+<script>
+// ===== QUESTION DATA =====
+const QUESTIONS = [
+  {id:1,dim:'A',text:'刚进一局，你通常最像哪种人？',opts:['先降低存在观望观望，避免失误','先正常走流程，机会来了再说','我会主动带点节奏','开局要是没点动静，我会浑身难受']},
+  {id:2,dim:'A',text:'局面僵住，你通常会？',opts:['继续装没看见，谁爱先手谁先手','先试探一下，但不想当第一个送的人','再没人上，我可要上了','还在等什么？我都上了']},
+  {id:3,dim:'A',text:'一旦你觉得"这波好像真能赢"，你更像？',opts:['先别激动，很多"能赢"最后都是幻觉','我先准备准备，但还想等局势再稳一点','差不多就能上了，机会本来就是抢出来的','都看到赢面了还不动，那等于把机会白送出去']},
+  {id:4,dim:'A',text:'哪种赢法最让你舒服？',opts:['队友 carry，我躺赢','我稳住操作，慢慢赢下这局','我抓住关键节奏点，一步步压过去','我亲手把自己变成全场焦点']},
+  {id:5,dim:'B',text:'一进队伍房间发现全员沉默，你的反应是？',opts:['太好了，安静点挺好','真有事我再说','我先试探两句，看看大家是不是活的','我直接开麦接管']},
+  {id:6,dim:'B',text:'队友开始各玩各的时，你更像？',opts:['尊重，祝福，各凭本事','我会提醒一次，听不听随缘','我会努力把节奏带起来','再不团结起来这局没救了，该做点什么']},
+  {id:7,dim:'B',text:'你的开麦画风更接近？',opts:['全局总字数不超过十个字','不废话，只在关键时刻发言','边打边播报，想到什么说什么','不只报情况，还做出预判']},
+  {id:8,dim:'B',text:'在队伍房间里，你一般更像？',opts:['能不说就不说，主打一个在线但静音','平时潜水，真有事我会补一句','我会自然承担提醒和沟通','我不光会说，还会顺手把气氛和节奏都带起来']},
+  {id:9,dim:'C',text:'队里只有一份关键资源或机会时，你更可能？',opts:['先给我，我自己顺了最重要','谁顺手谁拿，我不太纠结','看给谁最能把这一波带起来','明显更需要的人先拿，我后面再补']},
+  {id:10,dim:'C',text:'队里有人明显失误后，你一般会？',opts:['先保自己','能帮一点是一点，但也有底线','我会顺手把这个失误的后果补上','只要能把队伍拉回来，我临时补位都行']},
+  {id:11,dim:'C',text:'逆风局时，你最本能的反应是？',opts:['先保体面，别让我继续亏','老天保佑我别失误','想办法让这局还存在翻盘可能','先把锅扛住，让队伍别散']},
+  {id:12,dim:'C',text:'最能让你有成就感的是？',opts:['自己玩爽了','我没坑队友/拖后腿，已经不错','大家被我拉回正轨，一起赢下来','明明要输了，被我硬救回来了']},
+  {id:13,dim:'D',text:'一旦你真喜欢上一款游戏，你通常会？',opts:['开心玩玩，但不会让它影响我生活','会常玩，也愿意投入时间精力','会认真研究，也愿意投入时间精力','我很快会成为全成就收集者']},
+  {id:14,dim:'D',text:'赛季末、活动末班车这种东西，对你来说更像？',opts:['错过就错过，不至于','能参与就参与，不参与也没关系','如果我平时就在玩，会尽量收个尾','一到最后几天就像着了魔，必须参与']},
+  {id:15,dim:'D',text:'有个内容能明显提升体验、效率或牌面，但要花时间/预算，你会？',opts:['白嫖不到就算了，缘分未到','我先观望，慢慢来也不是不行','真在认真玩，我会考虑补一个','别劝，我多半会想一步到位']},
+  {id:16,dim:'D',text:'连输几把后，你最像？',opts:['关了，今天到此为止','先缓一会，等会再来','再来几把，我要找状态','已红温，今天必须狠狠赢回来']},
+  {id:17,dim:'S',text:'下面哪种夸法，最容易把你夸爽？',opts:['"哥哥/姐姐好厉害啊，下把能带带我吗～"','"你的指挥太到位了。"','"我去！你脑子怎么转这么快！"','"你这波太猛了，直接节奏起飞！"']},
+  {id:18,dim:'S',text:'你最容易把一局玩成什么片？',opts:['逆风翻盘，爽文主角','战术会议纪要','高光混剪大片','恩怨情仇连续剧']},
+  {id:19,dim:'S',text:'翻车后的第一句话，更像哪句？',opts:['"刚才这波是 XXX 出问题了。"','"对面有挂吧！我要验牌！"','"先别红温，稳一下还能玩。"','"下把看我操作。"']},
+  {id:20,dim:'S',text:'你对"资源/预算/道具留到以后再说"的态度更像？',opts:['能囤就囤，这才叫安全感','该花就花，先把眼前爽到再说','我不乱动，但会卡在最值的时候用','平时可以忍，真入坑就整套配齐']},
+  {id:21,dim:'S',text:'队友/伙伴背后最可能怎么形容你？',opts:['自带聚光灯，carry全场存在感很强','人形麦克风，非常擅长指挥布局','在线，但沉默寡言','每个失误都是有原因的，绝对不是实力的问题']},
+  {id:22,dim:'S',text:'以下哪种游戏截图最像你会主动发出去的？',opts:['刚打出天秀操作的那一张，必须发','结算页里我战绩最亮眼的那一张','仓库、背包、资源攒满到离谱那一张','熬到半夜终于全清完/毕业的那一张']},
+  {id:23,dim:'S',text:'哪句话最像你的潜台词？',opts:['"看我操作好吧。"','"有麦吗？没麦踢了。"','"..."','"我去，这能忍啊？"']},
+  {id:24,dim:'S',text:'如果你真的对一个游戏特别特别上头，你最有可能变成？',opts:['越玩越上头，想让身边朋友都一起玩','已经让朋友们陪我一起上头了','不声不响玩很久','玩得不知天昏地暗，又花钱又花时间']}
+];
+
+const HOOK_MAP = {
+  17:[{mainChar:2,clipMaker:1},{micLord:2,bigBrain:1},{bigBrain:2,zenMode:1},{aoligei:2,fullSend:1}],
+  18:[{mainChar:2,clipMaker:1},{micLord:2,bigBrain:1},{clipMaker:2,aoligei:1},{tao:2,tough:1}],
+  19:[{bigBrain:2,micLord:1},{tough:2,tao:1},{zenMode:2,noMicWokenDay:1},{mainChar:2,fullSend:1}],
+  20:[{vaultRat:2,lastHit:1},{aoligei:2,clipMaker:1},{lastHit:2,bigBrain:1},{fullSend:2,mainChar:1}],
+  21:[{mainChar:2,clipMaker:1},{micLord:2,bigBrain:1},{noMicWokenDay:2,zenMode:1},{tough:2,tao:1}],
+  22:[{clipMaker:2,mainChar:1},{lastHit:2,bigBrain:1},{vaultRat:2,zenMode:1},{fullSend:2,tao:1}],
+  23:[{mainChar:2,aoligei:1},{micLord:2,tough:1},{noMicWokenDay:2,zenMode:1},{tao:2,fullSend:1}],
+  24:[{fullSend:2,micLord:1},{micLord:2,fullSend:1},{noMicWokenDay:2,vaultRat:1},{fullSend:2}]
+};
+
+const TYPE_TARGETS = {
+  mainChar:{A:8,B:4,C:0,D:4}, micLord:{A:0,B:8,C:4,D:4},
+  aoligei:{A:8,B:0,C:-4,D:4}, zenMode:{A:-8,B:-4,C:0,D:-8},
+  bigBrain:{A:-4,B:4,C:4,D:0}, noMicWokenDay:{A:-4,B:-8,C:-4,D:0},
+  tough:{A:0,B:4,C:-4,D:8}, clipMaker:{A:4,B:4,C:-4,D:8},
+  lastHit:{A:-4,B:-4,C:-4,D:0}, vaultRat:{A:-8,B:-4,C:0,D:-4},
+  tao:{A:4,B:0,C:-8,D:8}, fullSend:{A:4,B:0,C:0,D:8}
+};
+
+const TYPE_INFO = {
+  mainChar:{name:'皇族',code:'MainChar',emoji:'👑',avatar:'avatars/皇族.png',
+    title:'你进游戏不是来参与的，你是来给这一局开主线的。',
+    quote:'"看我操作好吧。"',
+    desc:'你天然会把自己代入成这局最该有镜头的人。你不只想赢，你还想赢得像剧情杀、像高光集锦、像结算页第一个该点开的人。只要轮到你掌握主动权，你就会下意识觉得"这波该我演了"。而且你一旦认真玩，通常也不太甘心自己像个路人，手感、牌面、皮肤和仪式感都会慢慢跟着拉起来。',
+    longDesc:'你这种人最明显的特征，不是单纯爱出风头，而是非常需要"存在感被看见"。顺风时你会打得特别像主角，越有人看、越有画面、越像高光局，你的状态就越容易拉满；逆风时你也未必会立刻收敛，反而可能更想靠一波翻盘把剧本扳回来。你对普通赢法的兴趣其实没有别人想象中那么大，你更在意的是"这局到底有没有我的名字"。所以你会天然偏爱那些能体现手感、牌面、节奏和个人存在感的东西。在和平精英里，你是那种非要打到决赛圈 1 穿 4 才过瘾的人；在英雄联盟手游和无畏契约手游里，你是每局都想拿 MVP、想把结算页截下来的那种选手。 一旦你真入坑，很多投入不只是为了强度，更是为了让自己玩起来像自己心里那个版本的主角。',
+    teammate:'赢了像主角，输了也像支线里戏很多的主角。',
+    tags:['主角感', '镜头意识', '表演型选手', '天生聚光灯']},
+  micLord:{name:'麦上皇',code:'MicLord',emoji:'🎙',avatar:'avatars/麦上皇.png',
+    title:'你不开口的时候像路人，一开口就像房主。',
+    quote:'"有麦吗？没麦踢了。"',
+    desc:'你最自然的状态，就是一边玩一边把局势说清楚。你不一定非要抢操作，但你很难不接管节奏：谁该动、什么时候上、哪里有坑、哪波别乱来，你总想先帮大家捋一遍。你在不同游戏里都会不自觉变成那个"场上扩音器"，而且只要是会长期玩的坑，你往往也会顺手把该补的体系补齐，因为在你眼里，既然要带队，配置和理解就不能太糊。',
+    longDesc:'你最有意思的地方，在于你对"局势失控"这件事耐受度特别低。别人乱一点可能还能继续玩，你一旦发现队伍各打各的、信息没人说、决策没人接，你就会忍不住上麦把整个场子拎起来。你不是单纯话多，而是天生有一种把混乱整理成秩序的冲动。在和平精英四排里，你就是那个开局报点、中局定蹲点、决赛圈分工的指挥；在英雄联盟手游的排位里，你是那个帮打野规划路线、帮辅助定视野、帮 C 位算兵线的场控型选手。 顺风时你像导航，逆风时你像临时班主任，哪怕自己已经倒了，嘴也还在继续上班。你对于自己常玩的游戏通常也不太会佛着玩，因为你默认"既然我要说，那我就得真的懂"；所以你的投入往往不是表演型投入，而是把理解、配置、经验和话语权一起配齐的那种投入。',
+    teammate:'没你时像野队，有你时像开晨会。',
+    tags:['指挥官', '控场大师', '语音中枢', '团队灵魂']},
+  aoligei:{name:'开团学家',code:'Aoligei',emoji:'⚡',avatar:'avatars/开团学家.png',
+    title:'你的人生哲学很简单：有赢的机会，那就别磨叽。',
+    quote:'"上啊！快上啊！"',
+    desc:'你是那种一旦觉得这波好像真能赢，就会直接扑上去的人。你不爱把爽点攒到后面，你要的是当下的火花、当下的碰撞、当下的反馈。对你来说，犹豫本身就是一种掉伤害，不管那是抢先手、逼进攻、压节奏还是直接把场面点燃。你也很容易为"立刻变强、立刻变爽"的东西心动，能马上改善体验的提升项、补强项或者外观项，常常比慢慢磨更能打动你。',
+    longDesc:'你玩游戏最大的特点，就是不喜欢把机会供起来研究。只要你感觉窗口开了，不管那个窗口是七成赢、六成赢还是"理论上也许能赢"，你都会本能地想先试一下。在和平精英里，你就是那种听到枪声先冲、看到空投不管几个人先刚的类型；在高能英雄里，你是永远第一个开大、第一个拉响冲锋的那一个。 你对即时反馈的依赖很强，越是需要胆子、速度和当场拍板的局面，你反而越容易来劲。也正因为这样，你的体验通常很两极：玩好了特别爽，翻车了也特别响。你不是不知道后手和稳健的价值，只是你很难忍受那种"明明有机会却被自己放掉"的憋屈感。所以在投入上你也偏即时型，凡是能让你现在就更顺、更快、更有手感的东西，都会比慢热型收益更容易打动你。',
+    teammate:'不一定每波都对，但每波都来得很快。',
+    tags:['先手发起者', '火药桶', '莽夫美学', '开团不回头']},
+  zenMode:{name:'仙人',code:'ZenMode',emoji:'🧘',avatar:'avatars/仙人.png',
+    title:'你不是不想赢，你只是不想为了赢把自己玩成火药桶。',
+    quote:'"别上头。"',
+    desc:'你有一种很稳定的"算了也行"气质。你当然知道赢很好，但你对风险、情绪波动和额外消耗有天然警觉，所以比起硬冲、硬赌、硬梭，你更习惯把节奏放在自己能舒服掌控的位置。你不太容易被活动、排行、版本和限时刺激牵着鼻子走，白嫖也能玩出完整体验；真要投入，你也更看重长期舒服，而不是短期上头。',
+    longDesc:'你这一型最难得的地方，是你对"赢"的态度其实比很多人都成熟。你不是没胜负欲，只是你知道很多时候为了那一下痛快去硬拧局面，最后换来的反而是更长时间的烦躁。所以你会下意识躲开那种把自己玩得很炸的状态，宁愿慢一点、稳一点，也不想为了证明什么把整局节奏和心情全部赔进去。你更适合那种节奏自己能把控的游戏：和平精英里打打娱乐模式，黎明觉醒里慢慢造家种地钓鱼，欢乐斗地主里让别人等到花儿都谢了的人。 顺风时你不容易飘，逆风时你也不太容易疯，这种稳定感会让你看起来有点淡，但其实很耐打。你对喜欢的游戏也一样，不太会因为排行榜、活动、强推内容就被拽着跑；如果你愿意投入，多半是因为这个游戏真的让你舒服，而不是它成功把你激怒了。',
+    teammate:'你不一定最亮，但通常是最不容易崩的那个。',
+    tags:['佛系玩家', '松弛感', '不上头', '氛围组']},
+  bigBrain:{name:'最强大脑',code:'BigBrain',emoji:'🧠',avatar:'avatars/最强大脑.png',
+    title:'颤抖吧！你的每一步都被我算好了',
+    quote:'"等会你这样，然后他那样。"',
+    desc:'你最强的不是手快，是脑子先到。你会下意识去看资源、顺序、站位、空档、情绪波动和场面漏洞，别人还在打当前回合，你已经开始想后面两三步会怎么走。你不需要真的横跨所有品类，照样会把这种"读局感"带到自己常玩的任何游戏里。消费上你也偏理性，通常只愿意为长期价值、策略空间和稳定体验买单，不太吃一时上头那一套。',
+    longDesc:'你很少是最先动的那个人，但经常是最早看懂这局的人。你对信息的敏感度特别高，很多别人觉得只是"小感觉"的东西，在你这里都会自动被拼成趋势、逻辑和下一步推演。放在天天象棋里你是那种开局十步就开始算残局的人，欢乐斗地主里你是靠记牌器+概率能反推对方手牌的那种；到了英雄联盟手游里，你是会算对方打野路径、算对方经济、算技能冷却的那种选手。 你很擅长在混乱里找出真正重要的点，也很擅长在大家都急的时候保持脑内清醒。所以你不一定是场上最吵、最冲、最秀的那个，但你经常是那个"如果按他说的来，后面还真会顺一点"的人。你在投入上也明显偏理性升级，不太容易被纯情绪带走；你更愿意为理解成本、长期收益和策略空间加码，因为你最在乎的从来不是一时热血，而是这套系统有没有被你吃透。',
+    teammate:'像队里合法自带的透视脑。',
+    tags:['预判大师', '读局高手', '战术型', '思维碾压']},
+  noMicWokenDay:{name:'赛博活死人',code:'NoMic',emoji:'👻',avatar:'avatars/赛博活死人.png',
+    title:'说话，只会影响我的操作速度',
+    quote:'"。。。"',
+    desc:'你不爱把每个想法都说出来。你更习惯自己判断、自己执行、自己消化局势，平时存在感不算高，但一旦真的出手，通常都很实在。你不是没有参与感，只是不爱把参与感挂在嘴上；你对喜欢的游戏也常是这种态度，未必高调展示投入，未必天天晒账号，但会安静地玩很久、默默把理解和积累都补上。',
+    longDesc:'你这一型最容易被误会成"没感觉"或者"没投入"，但其实你只是把大部分反馈都留在内部处理了。你不太喜欢一边玩一边解释自己，也不太喜欢把每个反应都播报给别人听，所以在群体里经常显得特别安静，甚至安静得有点像掉线。开黑的时候那种全程不说话、但关键时候一波三杀救场的人就是你。和平精英里你是那种没信号枪也没语音、但默默打完整局还能吃鸡的 solo 选手；欢乐麻将里你是那种一整盘不吱声，最后直接自摸清一色的那个。 可实际上，你并不是真的脱离现场，只是你处理局势的方式更像后台运行。你通常不会用高调证明自己会玩，但会用持续在线、稳定发挥和默默补足来证明你一直在。对喜欢的游戏也是一样，你可能不常发疯安利、不常晒战绩、不常晒号，但会在别人没注意的时候，已经悄悄玩成了"老东西"。',
+    teammate:'平时像静音路人，关键时也像静音路人。',
+    tags:['沉默玩家', '潜水王', '自闭型', '在但不说']},
+  tough:{name:'嘴硬哥',code:'Tough',emoji:'😤',avatar:'avatars/嘴硬哥.jpg',
+    title:'吵什么！反正肯定不是我的问题',
+    quote:'"这把真有点邪门啊。"',
+    desc:'你最大的天赋，是能在出问题的第一时间给问题配齐背景说明。你不是不能接受失误，你只是不能接受"这事就这么算了"。手感不对、节奏不对、阵容不对、运气不对、延迟不对，总之你得先把叙事权抢回来。也正因为你很难服输，一旦真被打得不爽，就容易进入"我得补一补""我得再来一把""我得把状态找回来"的加码模式。',
+    longDesc:'你这一型的核心，不是单纯爱嘴硬，而是特别不愿意让失败显得"没缘由"。对别人来说，输一局可能就是输一局；对你来说，输一局必须先被解释成某种可以理解、可以归因、可以翻案的事。你需要的不只是台阶，更是一套让自己重新站回来的逻辑。和平精英里你刚输完一把，第一句永远是"对面绝对开了"；英雄联盟手游里你是"这把打野不跟团"，无畏契约手游里你是"这把队友太坑了";欢乐斗地主里你是"就差一张"。反正不是你的问题，是天时地利人和都差了一点。 所以你翻车时经常会先进入语言系统，再进入冷静系统。你表面上是在找借口，实际上是在保护自己的竞技自尊。也因为你特别不爱服，这种人格很容易在不顺的时候继续加码：多打一把、多补一点、多试一次，直到自己觉得那口气差不多顺了为止。你不是最佛的玩家，但一定是最不愿意含糊认输的那一型。',
+    teammate:'嘴比枪法硬。',
+    tags:['嘴强', '不认输', '自尊型', '口头复盘家']},
+  clipMaker:{name:'后期老师',code:'ClipMaker',emoji:'🎬',avatar:'avatars/后期老师.jpg',
+    title:'Show time！看到我的华丽操作了吗。',
+    quote:'"It\'s show time！"',
+    desc:'你对"好看"这件事有很深执念。能帅赢就不丑赢，能打出节目效果就不愿意平推结束。你不是不在意胜负，你只是希望胜利最好带点镜头语言——一个好操作、一个反转、一段秀翻全场的瞬间，都会比平平无奇的稳妥更让你上头。你也因此更愿意为外观、动作、特效、手感这些"帅得出来"的东西投入，因为在你这里，体面本身就算战力。',
+    longDesc:'你跟很多人最大的区别，是你对"赢得漂不漂亮"这件事真的有要求。别人拿结果，你拿结果顺便还要拿画面；别人只想过关，你还想这一幕最好值得被剪出来。你不是不懂稳扎稳打，只是过于普通的胜利会让你觉得少了点灵魂。和平精英的载具空投翻身、无畏契约手游的 ace、英雄联盟手游的极限反杀，在你这里都不是结果，是素材。你会回放、你会剪、你会发朋友圈；你甚至愿意为更好看的皮肤、击杀特效、动作表情多花钱，因为这些在你心里从来不是装饰，而是"角色感"的一部分。 你对精彩、反转、操作感和表现力有天然执念，这种执念会让你在关键时刻倾向于做更有戏的选择。也因此，你很容易被那些能明显提升观感和气质的东西吸引：皮肤、动作、特效、击杀感、镜头感，在你这里都不是纯装饰，而是"这个人格值不值"的一部分。你玩得越认真，越容易把自己活成半个选手、半个自己的后期老师。',
+    teammate:'一半是选手，一半是自己的剪辑师。',
+    tags:['高光猎人', '内容创作者', '表演欲', '素材为王']},
+  lastHit:{name:'拾荒老人',code:'LastHit',emoji:'🦊',avatar:'avatars/拾荒老人.png',
+    title:'你不抢第一波热闹，但你最会在结尾签上自己的名字。',
+    quote:'"你们先上。他们先上。"',
+    desc:'你很懂节奏，也很懂克制。你不热衷第一时间把自己扔进最乱的场面，但你特别会判断什么时候该进、什么时候该补、什么时候该把结果拿到手。你擅长结算，不擅长预热，所以常给人一种"平时没什么动静，最后怎么又是你"的感觉。消费观上你也很一致：不乱花，但特别会挑性价比，能白嫖就白嫖，真花也得花在最接近结果的地方。',
+    longDesc:'你这一型的高明之处，在于你特别清楚"热闹"和"结果"经常不是一回事。别人忙着抢第一波存在感的时候，你可能还在旁边观察；别人把力气都花在开场，你反而把心思留给结尾。和平精英里你是那种前期伏地、中期苟分、决赛圈却成功吃鸡的"老六"；英雄联盟手游里你是那种前期不争不抢、一波团战却4个人头收进怀里的 ADC；欢乐斗地主里你是那种前面出牌一直让，最后几张偏偏接连王炸封顶的那一个。 所以你给人的感觉常常是存在感不高，但结算感很强：不一定最先上场，却经常最懂什么时候出手最值。你不爱空耗资源，也不爱为了面子硬冲，很多时候你宁愿让别人先把局面烧起来，再挑对自己最舒服、最稳妥的那个时机进场。你在投入上也很像这样，不追花活，不追大话，主打一个花得值、拿得到、落得下。所以你不是最炸的那类玩家，但非常容易成为最后那个让人"怎么又是你"的人。',
+    teammate:'平时看着没动静，结算一出来又很难不服。',
+    tags:['收割者', '省力大师', '最后一击', '效率主义']},
+  vaultRat:{name:'囤囤鼠',code:'VaultRat',emoji:'🐹',avatar:'avatars/囤囤鼠.png',
+    title:'你的安全感，不是来自赢面，是来自库存。',
+    quote:'"先留着，这个后面绝对有用。"',
+    desc:'你对资源有近乎虔诚的执念。你相信很多东西不是现在要不要用的问题，而是"后面可能有大用"，所以不管是道具、体力、牌、技能、机会还是预算，你都习惯先留一手。你玩的是局势，也玩一种库存不断上涨的幸福感。你不一定冲动投入，但对月卡、储值、资源包、仓位、长期收益这种"越囤越舒服"的东西通常很有感觉。',
+    longDesc:'你这种人最不相信的，就是"船到桥头自然直"。你更相信凡事先留后手，心里才不会慌。所以别人看一个东西是"现在能不能用"，你看的是"如果我现在不用，后面是不是更舒服"；别人追当下爆发，你追长期安稳。和平精英里你是那种有5个医疗箱还不舍得用、3个手雷要留到决赛圈才扔的人；黎明觉醒里你是那种房子仓库塞得满满、木材石头比油还多、但一个都舍不得拿来升级的那一个；无畏契约手游里你总是那个每日任务必完成、赛季手册必续的玩家。 你不一定真的最强，但你的局通常都比较有余量，因为你很少把所有东西一次性打空。你会从资源、机会、道具、预算甚至体力这种层面去建立自己的安全感，这让你显得特别像仓鼠，也特别像后勤。你对投入这件事也不太冲动，更愿意接受那种能长期积累、慢慢回本、越放越香的东西。你未必是最爱出手的玩家，但一定是最懂"手里有货，心里不慌"的那一型。',
+    teammate:'像后勤部长，也像移动黑市。',
+    tags:['囤积癖', '留一手', '收集控', '仓鼠玩家']},
+  tao:{name:'白磷选手',code:'Tao',emoji:'💀',avatar:'avatars/白磷选手.png',
+    title:'你玩的大多数不是对局，是恩怨。',
+    quote:'"我去这能忍啊？"',
+    desc:'你很容易把普通一局打成私人账本。谁搞了你、谁断了你节奏、谁抢了你风头、谁刚才压了你一手，你都会默默记在心里。你不是不懂大局，你只是常常觉得那口气比大局更重要，所以一旦被点燃，就容易从时间、情绪到预算一起加码，主打一个"今天不把这事讨回来我睡不着"。',
+    longDesc:'你这一型最鲜明的地方，是你对"冒犯感"特别敏感。别人可能觉得那只是一次普通交手、一次正常失误、一次小小冲突，但你会很快把它记成一笔账。只要那一下真的点到了你，你后面的注意力、情绪和行动都会开始围着这笔账转。和平精英里你被一个人阴过一把，打完就是去翻他的 ID；英雄联盟手游里你要是被对面打野反了两次，一整局节奏都会变成"这个打野我今天一定要单杀"。 你当然也知道大局重要，可一旦情绪上来了，很多时候你还是会默认"先把这个人/这口气处理了再说"。所以你在顺风时可能只是凶，逆风时却很容易变成很执着、很不服、很能追的人。这种人格不一定时时刻刻都高燃，但一旦被点着，就会在时间、精力和投入上越来越敢加码。你玩游戏的时候最像的不是普通玩家，而是那种一旦记账就必须清账的恩怨型选手。',
+    teammate:'只要上头，地图和时间都劝不住。',
+    tags:['记仇', '追债型', '有仇必报', '不死不休']},
+  fullSend:{name:'上头者',code:'FullSend',emoji:'🔥',avatar:'avatars/上头者.png',
+    title:'一旦你真喜欢上一个游戏，时间、钱包、睡眠和尊严都会一起下场。',
+    quote:'"我跟你说我昨晚玩了一晚上 xxx。"',
+    desc:'你不是普通意义上的"认真玩"，你是会把一个坑玩出长期关系的人。你会肝、会卷、会研究、会补配、会追活动、会追收藏，甚至会把自己的作息和预算一起卷进来。你未必每时每刻都高调，但只要真入坑，就很难停在"随便玩玩"这一步；对你来说，体验、效率、牌面、成长和完成度，都值得继续加码。',
+    longDesc:'你这一型最大的特点，不是简单的"爱玩"，而是特别容易和游戏建立深度关系。别人喜欢一个游戏，可能只是最近常玩；你喜欢一个游戏，往往会很快进入研究、补配、追进度、追活动、追强度、追收藏的完整闭环。和平精英你可能从S1一路坚持打到现在；英雄联盟手游你是那种连续十几个赛季打上王者还嫌不够的人；无畏契约手游里你是连训练场都要练够30分钟再排位的玩家；黎明觉醒里你是那种房子从茅屋盖到豪宅、联盟从头带到尾的那一个。 你不是非要高调展示，但你的生活节奏、时间分配、情绪起伏甚至消费决定，都会慢慢被这个游戏卷进去。你对"差不多得了"这种状态的停留时间很短，因为一旦确认自己真的喜欢，你就会忍不住想把体验再往上抬一格，把效率再提一点，把完成度再补满一些。你未必最爱说，但很能投；未必最爱演，但很能卷。对你来说，真正入坑从来不是开始玩，而是开始认真经营这段关系。',
+    teammate:'你不是在玩游戏，你是在和游戏签长期合同。',
+    tags:['沉迷型', '越玩越上头', '氪金倾向', '停不下来']}
+};
+
+// ===== STATE =====
+let answers = new Array(24).fill(-1);
+let mobileCurrentQ = 0;
+
+function isMobile() { return window.innerWidth <= 640; }
+
+// ===== INIT =====
+function init() {
+  // Render type grid on start page
+  const grid = document.getElementById('types-grid');
+  const order = ['mainChar','micLord','aoligei','zenMode','bigBrain','noMicWokenDay','tough','clipMaker','lastHit','vaultRat','tao','fullSend'];
+  grid.innerHTML = order.map(key => {
+    const t = TYPE_INFO[key];
+    return `<div class="type-card" onclick="previewType('${key}')">
+      <div class="type-card-icon"><img src="${t.avatar}" alt="${t.name}"></div>
+      <div class="type-card-code">${t.code}</div>
+      <div class="type-card-name">${t.name}</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== PREVIEW TYPE (demo mode) =====
+function previewType(typeKey) {
+  const info = TYPE_INFO[typeKey];
+  const target = TYPE_TARGETS[typeKey];
+
+  // Build fake result data using this type's target profile
+  const fakeDimScores = { A: target.A, B: target.B, C: target.C, D: target.D };
+  const fakeScores = {};
+  for (const k of Object.keys(TYPE_TARGETS)) {
+    const t = TYPE_TARGETS[k];
+    fakeScores[k] = 100 - Math.abs(fakeDimScores.A - t.A) * 1.25
+                       - Math.abs(fakeDimScores.B - t.B) * 1.25
+                       - Math.abs(fakeDimScores.C - t.C) * 1.25
+                       - Math.abs(fakeDimScores.D - t.D) * 2.5;
+  }
+  // Ensure primary is on top
+  fakeScores[typeKey] = 100;
+  const sorted = Object.entries(fakeScores).sort((a, b) => b[1] - a[1]);
+  renderResult(sorted.slice(0, 3), fakeDimScores, fakeScores);
+  window._previewMode = true;
+}
+
+// ===== SCREEN =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ===== START TEST =====
+function startTest() {
+  answers = new Array(24).fill(-1);
+  mobileCurrentQ = 0;
+  renderAllQuestions();
+  showScreen('question');
+  updateProgress();
+
+  // Mobile mode
+  if (isMobile()) {
+    document.body.classList.add('mobile-mode');
+    showMobileQuestion(0);
+  } else {
+    document.body.classList.remove('mobile-mode');
+  }
+}
+
+function restartTest() {
+  window._previewMode = false;
+  showScreen('start');
+}
+
+// ===== RENDER ALL QUESTIONS (scroll mode) =====
+function renderAllQuestions() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  QUESTIONS.forEach((q, idx) => {
+    const block = document.createElement('div');
+    block.className = 'q-block';
+    block.id = 'q-block-' + idx;
+
+    let optsHtml = '';
+    q.opts.forEach((opt, oi) => {
+      optsHtml += `
+        <div class="q-opt" data-q="${idx}" data-o="${oi}" onclick="selectOpt(this,${idx},${oi})">
+          <div class="q-radio"></div>
+          <div class="q-opt-text">${opt}</div>
+        </div>`;
+    });
+
+    block.innerHTML = `
+      <div class="q-number-text">${idx + 1}. ${q.text}</div>
+      <div class="q-options">${optsHtml}</div>`;
+    container.appendChild(block);
+  });
+}
+
+function selectOpt(el, qIdx, oIdx) {
+  answers[qIdx] = oIdx;
+  const block = document.getElementById('q-block-' + qIdx);
+  block.querySelectorAll('.q-opt').forEach((opt, i) => {
+    opt.classList.toggle('selected', i === oIdx);
+  });
+  block.classList.remove('unanswered');
+  updateProgress();
+
+  // Mobile: auto advance after short delay
+  if (isMobile()) {
+    setTimeout(() => {
+      if (mobileCurrentQ < 23) {
+        mobileNext();
+      } else {
+        // Last question answered, show submit
+        document.getElementById('btn-mnext').textContent = '查看结果';
+      }
+    }, 350);
+  }
+}
+
+// ===== MOBILE NAVIGATION =====
+function showMobileQuestion(idx) {
+  mobileCurrentQ = idx;
+  document.querySelectorAll('.q-block').forEach(b => b.classList.remove('mobile-active'));
+  const block = document.getElementById('q-block-' + idx);
+  if (block) {
+    block.classList.add('mobile-active');
+    block.style.animation = 'none';
+    block.offsetHeight;
+    block.style.animation = 'fadeIn 0.3s ease';
+  }
+  // Update nav buttons
+  document.getElementById('btn-mprev').style.display = idx === 0 ? 'none' : '';
+  const nextBtn = document.getElementById('btn-mnext');
+  if (idx === 23) {
+    nextBtn.textContent = answers[23] !== -1 ? '查看结果' : '下一题';
+  } else {
+    nextBtn.textContent = '下一题';
+  }
+  window.scrollTo(0, 0);
+}
+
+function mobileNext() {
+  if (mobileCurrentQ === 23) {
+    // Submit
+    if (answers[mobileCurrentQ] === -1) {
+      showToast('请先选择一个选项');
+      return;
+    }
+    // Check all answered
+    const unanswered = answers.indexOf(-1);
+    if (unanswered !== -1) {
+      showMobileQuestion(unanswered);
+      showToast('还有题目未作答，已跳转');
+      return;
+    }
+    document.body.classList.remove('mobile-mode');
+    showScreen('loading');
+    setTimeout(() => calculateResult(), 2000);
+    return;
+  }
+  if (mobileCurrentQ < 23) {
+    showMobileQuestion(mobileCurrentQ + 1);
+  }
+}
+
+function mobilePrev() {
+  if (mobileCurrentQ > 0) {
+    showMobileQuestion(mobileCurrentQ - 1);
+  }
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== -1).length;
+  document.getElementById('q-progress-text').textContent = `${answered} / 24`;
+  document.getElementById('q-fill').style.width = `${(answered / 24) * 100}%`;
+  const btn = document.getElementById('btn-submit');
+  if (answered === 24) {
+    btn.classList.add('ready');
+  } else {
+    btn.classList.remove('ready');
+  }
+}
+
+// ===== SUBMIT =====
+function submitTest() {
+  const answered = answers.filter(a => a !== -1).length;
+
+  // Clear all previous unanswered highlights
+  document.querySelectorAll('.q-block.unanswered').forEach(b => b.classList.remove('unanswered'));
+
+  if (answered < 24) {
+    // Mark ALL unanswered questions
+    let firstUnanswered = null;
+    answers.forEach((a, i) => {
+      if (a === -1) {
+        const block = document.getElementById('q-block-' + i);
+        block.classList.add('unanswered');
+        if (!firstUnanswered) firstUnanswered = block;
+      }
+    });
+
+    // Scroll to first unanswered
+    if (firstUnanswered) {
+      firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Shake animation
+      firstUnanswered.style.animation = 'none';
+      firstUnanswered.offsetHeight;
+      firstUnanswered.style.animation = 'shake 0.5s ease';
+    }
+
+    const remaining = 24 - answered;
+    showToast(`还有 ${remaining} 题未作答，已为你定位到第一题`);
+    return;
+  }
+  showScreen('loading');
+  setTimeout(() => calculateResult(), 2000);
+}
+
+// ===== CALCULATION =====
+function calculateResult() {
+  const scores = { A:0, B:0, C:0, D:0 };
+  const scoreMap = [-2, -1, 1, 2];
+  for (let i = 0; i < 16; i++) {
+    scores[QUESTIONS[i].dim] += scoreMap[answers[i]];
+  }
+
+  const hookBonus = {};
+  Object.keys(TYPE_TARGETS).forEach(t => hookBonus[t] = 0);
+  for (let i = 16; i < 24; i++) {
+    const qId = i + 1;
+    const bonusMap = HOOK_MAP[qId][answers[i]];
+    for (const [type, val] of Object.entries(bonusMap)) {
+      hookBonus[type] += val;
+    }
+  }
+
+  const dimScores = {};
+  for (const [type, target] of Object.entries(TYPE_TARGETS)) {
+    dimScores[type] = 100
+      - Math.abs(scores.A - target.A) * 1.25
+      - Math.abs(scores.B - target.B) * 1.25
+      - Math.abs(scores.C - target.C) * 1.25
+      - Math.abs(scores.D - target.D) * 2.5;
+  }
+
+  const hookScores = {};
+  for (const [type, bonus] of Object.entries(hookBonus)) {
+    hookScores[type] = Math.min(bonus * 6.25, 100);
+  }
+
+  const finalScores = {};
+  for (const type of Object.keys(TYPE_TARGETS)) {
+    finalScores[type] = dimScores[type] * 0.7 + hookScores[type] * 0.3;
+  }
+
+  const sorted = Object.entries(finalScores).sort((a, b) => {
+    if (b[1] !== a[1]) return b[1] - a[1];
+    if (hookBonus[b[0]] !== hookBonus[a[0]]) return hookBonus[b[0]] - hookBonus[a[0]];
+    if (dimScores[b[0]] !== dimScores[a[0]]) return dimScores[b[0]] - dimScores[a[0]];
+    return Math.abs(scores.D - TYPE_TARGETS[a[0]].D) - Math.abs(scores.D - TYPE_TARGETS[b[0]].D);
+  });
+
+  renderResult(sorted.slice(0, 3), scores, finalScores);
+}
+
+// ===== RESULT =====
+function renderResult(top3, dimScores, allScores) {
+  const primary = top3[0][0];
+  const info = TYPE_INFO[primary];
+  const topScore = top3[0][1];
+
+  // Left card
+  document.getElementById('r-left-name').textContent = info.name;
+  document.getElementById('r-left-code').textContent = info.code;
+  document.getElementById('result-avatar').innerHTML = `<img src="${info.avatar}" alt="${info.name}">`;
+  document.getElementById('r-left-quote').textContent = info.quote;
+
+  // Right card
+  document.getElementById('r-right-title').innerHTML = `${info.code} <small>（${info.name}）</small>`;
+  document.getElementById('r-match-badge').textContent = `匹配度 ${Math.round(topScore)}%`;
+  document.getElementById('r-right-hint').textContent = `维度命中度较高，当前结果可视为你的第一人格画像。`;
+  document.getElementById('result-tags').innerHTML = info.tags.map(t => `<span class="result-tag">${t}</span>`).join('');
+
+  // Desc & teammate
+  document.getElementById('result-title').textContent = info.title;
+  document.getElementById('result-desc').textContent = info.desc;
+  document.getElementById('result-longdesc').textContent = info.longDesc;
+  document.getElementById('result-teammate').textContent = info.teammate;
+
+  const dimCfg = [
+    {key:'A',name:'先手开火度',color:'#2d5be6'},
+    {key:'B',name:'麦上存在度',color:'#5b8af7'},
+    {key:'C',name:'抱团兜底度',color:'#8ab4ff'},
+    {key:'D',name:'上头投入度',color:'#0a3cdf'}
+  ];
+  const barsEl = document.getElementById('dim-bars');
+  barsEl.innerHTML = '';
+  dimCfg.forEach(d => {
+    const raw = dimScores[d.key];
+    barsEl.innerHTML += `
+      <div class="dim-item">
+        <div class="dim-head">
+          <span class="dim-name">${d.name}</span>
+          <span class="dim-val">${raw > 0 ? '+' : ''}${raw}</span>
+        </div>
+        <div class="dim-track">
+          <div class="dim-fill" style="width:0%;background:${d.color};"></div>
+        </div>
+      </div>`;
+  });
+
+  const matchEl = document.getElementById('match-list');
+  matchEl.innerHTML = '';
+  top3.forEach(([type, score], i) => {
+    const ti = TYPE_INFO[type];
+    matchEl.innerHTML += `
+      <div class="match-item">
+        <span class="match-rank r${i+1}">${i+1}</span>
+        <img src="${ti.avatar}" alt="${ti.name}" style="width:44px;height:44px;border-radius:10px;object-fit:contain;flex-shrink:0;background:var(--bg-option);">
+        <div class="match-info">
+          <div class="match-name">${ti.name}</div>
+          <div class="match-code">${ti.code}</div>
+        </div>
+        <span class="match-score">${score.toFixed(1)}</span>
+      </div>`;
+  });
+
+  showScreen('result');
+
+  setTimeout(() => {
+    dimCfg.forEach((d, i) => {
+      const raw = dimScores[d.key];
+      const pct = ((raw + 8) / 16 * 100);
+      barsEl.querySelectorAll('.dim-fill')[i].style.width = pct + '%';
+    });
+  }, 300);
+
+  window._resultData = { primary, top3, dimScores, allScores };
+
+  // Switch actions for preview mode
+  const actionsEl = document.getElementById('result-actions');
+  if (window._previewMode) {
+    actionsEl.innerHTML = '<button class="btn-start" onclick="restartTest()">← 返回首页查看其他人格</button>';
+  } else {
+    actionsEl.innerHTML = '<button class="btn-start" onclick="shareResult()">分享结果</button>' +
+                         '<button class="btn-share-home" onclick="restartTest()">重新测试</button>';
+  }
+}
+
+// ===== SHARE =====
+function shareResult() {
+  const { primary, dimScores } = window._resultData;
+  const info = TYPE_INFO[primary];
+
+  document.getElementById('s-name').textContent = info.name;
+  document.getElementById('s-code').textContent = info.code;
+  document.getElementById('s-avatar').src = info.avatar;
+  document.getElementById('s-avatar').alt = info.name;
+  document.getElementById('s-quote').textContent = info.quote;
+  document.getElementById('s-desc').textContent = info.desc;
+  document.getElementById('s-tags').innerHTML = info.tags.map(t => '<span class="share-tag-item">' + t + '</span>').join('');
+
+  // QR code
+  const qrEl = document.getElementById('s-qr');
+  qrEl.innerHTML = '';
+  const testUrl = 'https://lijinghang112.github.io/gzti-test/';
+  if (typeof QRCode !== 'undefined' && QRCode.toCanvas) {
+    QRCode.toCanvas(testUrl, { width: 128, margin: 1, color: { dark: '#0a3cdf', light: '#ffffff' } }, function(err, canvas) {
+      if (!err) {
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        qrEl.appendChild(canvas);
+      } else {
+        qrEl.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=' + encodeURIComponent(testUrl) + '&color=0a3cdf" style="width:100%;height:100%;">';
+      }
+    });
+  } else {
+    // Fallback: use public QR API
+    qrEl.innerHTML = '<img src="https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=' + encodeURIComponent(testUrl) + '&color=0a3cdf" style="width:100%;height:100%;">';
+  }
+
+  document.getElementById('share-overlay').classList.add('active');
+}
+
+function saveShareImage() {
+  const card = document.getElementById('share-capture');
+  showToast('正在生成图片...');
+  if (typeof html2canvas === 'undefined') {
+    showToast('图片库加载中，请稍后再试');
+    return;
+  }
+  html2canvas(card, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#f0f4f8',
+    logging: false
+  }).then(function(canvas) {
+    const dataUrl = canvas.toDataURL('image/png');
+    if (isMobile()) {
+      // Mobile: show image in modal for long-press save
+      document.getElementById('save-modal-img').src = dataUrl;
+      document.getElementById('save-modal').classList.add('active');
+      document.getElementById('share-overlay').classList.remove('active');
+    } else {
+      // Desktop: trigger download
+      const link = document.createElement('a');
+      link.download = 'GZTI-' + (window._resultData ? TYPE_INFO[window._resultData.primary].name : 'result') + '.png';
+      link.href = dataUrl;
+      link.click();
+      showToast('图片已保存');
+    }
+  }).catch(function(e) {
+    console.error(e);
+    showToast('生成失败，请截图保存');
+  });
+}
+
+function closeSaveModal(e) {
+  if (e.target === document.getElementById('save-modal') || e.target.classList.contains('save-modal-close')) {
+    document.getElementById('save-modal').classList.remove('active');
+  }
+}
+
+function closeShare(e) {
+  if (e.target === document.getElementById('share-overlay')) {
+    document.getElementById('share-overlay').classList.remove('active');
+  }
+}
+
+function copyShareText() {
+  const { primary, dimScores } = window._resultData;
+  const info = TYPE_INFO[primary];
+  const text = `🎮 我的游戏人格是【${info.name}】！\n${info.emoji} ${info.quote}\n\n📊 四维数据：\n🎯先手 ${dimScores.A > 0?'+':''}${dimScores.A} | 🎙控麦 ${dimScores.B > 0?'+':''}${dimScores.B} | 🤝抱团 ${dimScores.C > 0?'+':''}${dimScores.C} | 🔥上头 ${dimScores.D > 0?'+':''}${dimScores.D}\n\n来测测你是什么游戏人格 👉 GZTI游戏玩家人格测试`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast('已复制分享文案'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('已复制分享文案');
+  }
+  document.getElementById('share-overlay').classList.remove('active');
+}
+
+function copyLink() {
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('链接已复制'));
+  } else {
+    showToast('请手动复制链接分享');
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ===== SHAKE ANIM =====
+const styleSheet = document.createElement('style');
+styleSheet.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }`;
+document.head.appendChild(styleSheet);
+
+// ===== BOOT =====
+init();
+</script>
+</body>
+</html>
